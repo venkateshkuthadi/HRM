@@ -356,7 +356,6 @@ double netPay =ctc- totalDeductions;
 			</tr>
 		</table>
 	</div>
-
 	<footer>
 		<div>
 			<p class="parapadding">
