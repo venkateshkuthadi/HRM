@@ -238,7 +238,7 @@
 								<option value="employeer"> Employeer</option>
 								<option value="admin">ADMIN</option>
 								<option value="manager">Manager</option>
-								<option value="hr">HR</option>
+								
 							</select>
 						</div>
 						<div class="form-group">
