@@ -170,7 +170,7 @@
 </nav>
     
 <header>
-<img src="https://mdbootstrap.com/img/new/slides/031.jpg" class="img-fluid" width="1600" height="765"/>
+<img src="LogoMakerCa-1653576121637.jpg" class="img-fluid" />
   <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
