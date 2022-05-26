@@ -146,7 +146,6 @@ tr.rows:nth-child(odd) td.column3 {
 <div class="card">
   <div class="card-body" id="payslip">
   <div class="right-align"><button type="button" class="btn btn-success align" id="download">Download PDF</button></div>
-    <form action="PaySlipServlet" method="post">
 <%
 Object obj=SharedObject.getFromSession(EmployeeConstants.EMPLOYEE_ID);
 String userId="";
@@ -371,7 +370,6 @@ double netPay =ctc- totalDeductions;
 			</p>
 		</div>
 	</footer>	
-</form>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
