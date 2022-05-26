@@ -245,7 +245,7 @@ height:690px;
 								<option value="employee">EMPLOYEE</option>
 								<option value="employeer"> Employeer</option>
 								<option value="admin">ADMIN</option>
-							<%-- 	<option value="manager">Manager</option> --%>
+								<option value="manager">Manager</option> 
 								<option value="hr">HR</option>
 							</select>
 						</div>
