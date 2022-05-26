@@ -15,110 +15,141 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>EmployeePayslip</title>
-<style>
-div.headtext {
-	margin-left: 25px;
-	margin-right: 25px;
-	align: center;
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+<style>}
+body {
+	margin: 0;
+	text-align : center;
 }
-
-div.backgrouondColor {
-	background-color: AliceBlue;
-	margin-left: 25px;
-	margin-right: 25px;
+div{
+	margin: 20px;
 }
-
-div.backgrouondColor1 {
-	background-color: DimGrey;
-	margin-left: 25px;
-	margin-right: 25px;
+div.overallborder{
+	border: 2px solid black;
 }
-
-p.alignleft {
-	float: left;
+table {
+	width:100%;
 }
-
-p.alignright {
-	float: right;
+th{
+	background-color: #de6133;
 }
-
-p.aligncenter {
-	text-align: center;;
+th,td {
+text-align: left;
+padding: 10px;
 }
-
-div.backgrouondColor2 {
-	background-color: HoneyDew;
-	margin-left: 25px;
-	margin-right: 25px;
+table.paycal tr:nth-child(odd) {
+	background-color: #edaa92;
 }
-
-div.backgrouondColor3 {
-	background-color: LightGray;
-	margin-left: 25px;
-	margin-right: 25px;
+th.empinfo{
+	text-align: center;
 }
-
-td.padding {
-	padding-left: 2cm;
+hr{
+	height: 2px;
+	border-width: 0;
+	background-color: black;
 }
-
-td.padding2 {
-	padding-left: 45%;
+button {
+	align : center;
 }
-
-td.padding3 {
-	padding-left: 366%;
+.card {
+	width: 63%;
+	margin: 0 20%;
 }
-
-td.padding4 {
-	padding-left: 30%;
+.align {
+	text-align: center;
 }
-
-td.padding5 {
-	padding-left: 190%;
+.left-align{
+	margin-left: 15px;
+	text-align: left;
 }
-
-td.padding0 {
-	padding-left: 20cm;
+.right-align{
+	margin-right: 15px;
+	text-align: right;
 }
-
-p.parapadding {
-	padding-left: 2cm;
+.rows {
+	display: flex;
 }
-
-div.imgpadding {
-	padding-left: 17cm;
+.column1 {
+	flex: 50%;
 }
-
-td.padding6 {
-	padding-left: 12.2cm;
-	color: white;
-	font-size: 20px;
+.column2 {
+	flex: 25%;
+	text-align: right;
 }
-
-td.padding7 {
-	font-size: 20px;
+.column3 {
+	flex: 25%;
+	text-align: right;
+}
+th.column3 {
+	background-color: #333333;
 	color: white;
 }
-page[size="A4"] {  
-  width: 21cm;
-  height: 29.7cm; 
-  border-style: solid;
-  border-width: 5px; 
+tr.rows:nth-child(odd) td.column3 {
+	background-color: #bfbfbf;
 }
-
 </style>
 </head>
 <body>
+<script>
+	window.onload = function() {
+		document.getElementById("download").addEventListener("click", ()=> {
+			const payslip = document.getElementById('payslip');
+
+			  html2canvas(payslip, {
+			    useCORS: true,
+			    onrendered: function(canvas) {
+
+			      var pdf = new jsPDF('p', 'pt', 'letter');
+
+			      var pageHeight = 986;
+			      var pageWidth = 900;
+			      for (var i = 0; i <= payslip.clientHeight / pageHeight; i++) {
+			        var srcImg = canvas;
+			        var sX = 0;
+			        var sY = pageHeight * i; // start 1 pageHeight down for every new page
+			        var sWidth = pageWidth;
+			        var sHeight = pageHeight;
+			        var dX = 0;
+			        var dY = 0;
+			        var dWidth = pageWidth;
+			        var dHeight = pageHeight;
+
+			        window.onePageCanvas = document.createElement("canvas");
+			        onePageCanvas.setAttribute('width', pageWidth);
+			        onePageCanvas.setAttribute('height', pageHeight + 900);
+			        var ctx = onePageCanvas.getContext('2d');
+			        ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+
+			        var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+			        var width = onePageCanvas.width;
+			        var height = onePageCanvas.clientHeight;
+
+			        if (i > 0) // if we're on anything other than the first page, add another page
+			          pdf.addPage(612, 791); // 8.5" x 11" in pts (inches*72)
+
+			        pdf.setPage(i + 1); // now we declare that we're working on that page
+			        pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width * .62), (height * .62)); // add content to the page
+
+			      }
+			      pdf.save('payslip.pdf');
+			    }
+			  })
+			}
+		)}
+
+</script>
 <% SharedObject.setSession(request.getSession()); %>
-<form action="PaySlipServlet" method="post">
+
+<div class="card">
+  <div class="card-body" id="payslip">
+  <div class="right-align"><button type="button" class="btn btn-success align" id="download">Download PDF</button></div>
+    <form action="PaySlipServlet" method="post">
 <%
 Object obj=SharedObject.getFromSession(EmployeeConstants.EMPLOYEE_ID);
 String userId="";
-int employeeId;
-String name=null;
-String role=null;
-double ctc=0.0;
 if(null != obj)
 {
 	userId=(String)obj;
@@ -126,15 +157,17 @@ if(null != obj)
 }
 HRMService service = new HRMServicesImplementation();
 List<EmployeeBean> b=service.search(userId);
-for(EmployeeBean bean:b)
-{
+EmployeeBean bean=null;
+bean=b.get(0);
+double ctc=bean.getCurrentCTC();
 
-	name=bean.getFirstName()+bean.getLastName();
-	role=bean.getRole();
-	ctc=bean.getCurrentCTC(); 
+if((ctc < 100000.0) && (ctc < 10000.0)){
+	ctc = ctc*100000.0;
+}
+else if((ctc < 100000.0) && (ctc > 10000.0)){
+	ctc = ctc* 12.0;
 }
 
-//Double.parseDouble(request.getParameter("ctc"));
 double basic=(40.0/100)*ctc;
 double conveyance=(3.2/100)*ctc;
 double hra=(20.0/100)*ctc;
@@ -148,160 +181,201 @@ double otherDeductions=0.0;
 double grossSalary=ctc;
 double netPay =ctc- totalDeductions;
 %>
-	<div class="imgpadding">
-		<img src="logo.png" alt="logo" width="210" height="100" align="center">
-	</div>
 
-	<div class="headtext" id="date">
+	<div class="overallborder">
 		<table>
 			<tr>
-<td align="right">Payslip for the month of: <%= new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date())%></td>
- 
-				<td class="padding0">No.of working Days:31</td>
+				<td>
+					<div class="imgpadding">
+						<img src="logo.png" alt="logo" width="310" height="150" align="center">
+					</div>
+				</td>
+				<td class="align">
+					<h1>DHATRI INFO SOLUTIONS PVT.LTD.</h1>
+					<p>
+						Manjeera Trinity Corporate, Suite #406, KPHB Phase 3, Kukatpally,
+						Hyderabad: 500 072, Telangana, India<br> Phone: +91 40 6591 3555,
+						6555 7888 website: 
+						<a href="www.dhatriinfo.com">www.dhatriinfo.com</a>.
+					</p>
+				</td>
 			</tr>
+			<tr>
+				<td colspan = "2"><hr></td>
+			</tr>
+			<tr>
+				<td class="left-align">Payslip for the month of: <%= new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date())%></td>
+		 
+				<td class="right-align" text-align="right">No.of working Days:31</td>
+			</tr>		
 		</table>
-
-	</div>
-	<div class="backgrouondColor">
+		<br>
 		<table>
 			<tr>
-				<td><br>EmpName:<br>
-				<br></td>
-				<br>
-				<br>
-				<td><input type="text" name="emploeeName" value=<%=name %>>
-				<td class="padding2">EmpID:<br></td>
-				<td class="padding2"><input type="text" name="employeeID" value=<%=userId %>>
+				<th colspan="2" class="empinfo">EMPLOYEE INFORMATION</th>
 			</tr>
 			<tr>
-				<td>Designation:<br>
-				<br></td>
-				<td><input type="text" name="desigantion" value=<%=role %>>
-				<td class="padding2">Bank:<br></td>
-				<td class="padding2"><input type="text" name="bank">
+				<td>
+					<table>
+						<tr>
+							<td>EmpID:</td>
+							<td><%= bean.getEmployeeId() %></td>
+						</tr>
+						<tr>
+							<td>Full Name:</td>
+							<td><%= bean.getFirstName() + " " + bean.getLastName() %></td>
+						</tr>
+						<tr>
+							<td>Address:</td>
+							<td><%= bean.getPermanentAddress() %></td>
+						</tr>
+						<tr>
+							<td>Phone:</td>
+							<td><%= bean.getMobileNumber() %></td>
+						</tr>
+						<tr>
+							<td>EmailId:</td>
+							<td><%=bean.getEmailId() %></td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+					<tr>
+							<td>Location:</td>
+							<td><%= bean.getLocation() %></td>
+						</tr>
+						<tr>
+							<td>Designation:</td>
+							<td><%= bean.getRole() %></td>
+						</tr>
+						<tr>
+							<td>Date of Joining:</td>
+							<td><%= bean.getExperience() %></td>
+						</tr>
+						<tr>
+							<td>Bank:</td>
+							<td><%=bean.getBankname() %></td>
+						</tr>
+						<tr>
+							<td>Bank Account No:</td>
+							<td><%=bean.getBankAccNo() %></td></tr>
+					</table>
+				</td>
+			</tr>	
+		</table>
+		<br>
+		<table class="paycal">
+			<tr class="rows">
+				<th class="column1">EARNINGS</th>
+				<th class="column2">Current</th>
+				<th class="column3">YTD</th>
 			</tr>
-			<tr>
-				<td><br>Date of Joining:<br>
-				<br></td>
-				<td><input type="text" name="date of joining" value=<%=ctc %>>
-				<td class="padding2">BankAccountNo:<br></td>
-				<td class="padding2"><input type="text" name="bankAccountNO">
+			<tr class="rows">
+				<td class="column1">Basic:</td>
+				<td class="column2"><span name = "basic" id = "Basic"><%= basic %></span></td>
+				<td class="column3"><span name = "basic" id = "Basic"><%= basic %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Conveyance:</td>
+				<td class="column2"><span name = "conveyance" id = "Conveyance"><%= conveyance %></span></td>
+				<td class="column3"><span name = "conveyance" id = "Conveyance"><%= conveyance %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">HRA:</td>
+				<td class="column2"><span name = "hra" id = "HRA"><%= hra %></span></td>
+				<td class="column3"><span name = "hra" id = "HRA"><%= hra %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">City Compensatory All:</td>
+				<td class="column2"><span name = "citycompensatoryall" id = "CityCompensatoryAll"><%= cityCompensatoryAll %></span></td>
+				<td class="column3"><span name = "citycompensatoryall" id = "CityCompensatoryAll"><%= cityCompensatoryAll %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Special Allowance:</td>
+				<td class="column2"><span name = "specialallowance" id = "SpecialAllowance"><%= specialAllowance %></span></td>
+				<td class="column3"><span name = "specialallowance" id = "SpecialAllowance"><%= specialAllowance %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Medical:</td>
+				<td class="column2"><span name = "medical" id = "Medical"><%= medical %></span></td>
+				<td class="column3"><span name = "medical" id = "Medical"><%= medical %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1"><br></td>
+				<td class="column2"></td>
+				<td class="column3"></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1"><strong>Gross Pay</strong></td>
+				<td class="column2"><span name = "grosspay" id = "GrossPay"><%= grossSalary%></span></td>
+				<td class="column3"><span name = "grosspay" id = "GrossPay"><%= grossSalary%></span></td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<table class="paycal">
+			<tr class="rows">
+				<th class="column1">DEDUCTIONS</th>
+				<th class="column2">Current</th>
+				<th class="column3">YTD</th>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Professional Tax:</td>
+				<td class="column2"><span name = "professionaltax" id = "ProfessionalTax"><%= professionalTax %></span></td>
+				<td class="column3"><span name = "professionaltax" id = "ProfessionalTax"><%= professionalTax %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Income Tax:</td>
+				<td class="column2"><span name = "incometax" id = "IncomeTax"><%= incomeTax %></span></td>
+				<td class="column3"><span name = "incometax" id = "IncomeTax"><%= incomeTax %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1">Other Deductions:</td>
+				<td class="column2"><span name = "otherdeductions" id = "OtherDeductions"><%= otherDeductions %></span></td>
+				<td class="column3"><span name = "otherdeductions" id = "OtherDeductions"><%= otherDeductions %></span></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1"><br></td>
+				<td class="column2"></td>
+				<td class="column3"></td>
+			</tr>
+			<tr class="rows">
+				<td class="column1"><strong>Total Deductions:</strong></td>
+				<td class="column2"><span name = "totaldeductions" id = "TotalDeductions"><%= totalDeductions %></span></td>
+				<td class="column3"><span name = "totaldeductions" id = "TotalDeductions"><%= totalDeductions %></span></td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<table class="paycal">
+			<tr class="rows">
+				<th class="column1"><strong>NET PAY</strong></th>
+				<th class="column2"><span name = "netpay" id = "NetPay"><%= netPay %></span></th>
+				<th class="column3"><span name = "netpay" id = "NetPay"><%= netPay %></span></th>
 			</tr>
 		</table>
 	</div>
-	<div class="backgrouondColor1">
-		<table>
-			<tr>
-				<td class="padding7">Earnings</td>
-				<br>
-				<td class="padding6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deductions</td>
-			</tr>
-		</table>
-	</div>
-
-	<div class="backgrouondColor2">
-		<table>
-
-			<tr>
-				<br>
-				<br>
-				<td><br>Basic:<br>
-				<br></td>
-				<td><input type="text" name="basic" value=<%=basic %>>
-				<td class="padding2"><br>ProfessionalTax:<br>
-				<br></td>
-				<td class="padding2"><input type="text" name="professionalTax"
-					value="<%=professionalTax%>"></td>
-			</tr>
-
-			<tr>
-				<td><br>Conveyance:<br>
-				<br></td>
-				<td><input type="text" name="conveyance"
-					value="<%=conveyance %>">
-				<td class="padding2"><br>IncomeTax:<br>
-				<br></td>
-				<td class="padding2"><input type="text" name="incomeTax"
-					value="<%=incomeTax%>">
-			</tr>
-
-			<tr>
-				<td><br>HRA:<br>
-				<br></td>
-				<td><input type="text" name="hra" value="<%=hra%>">
-				<td class="padding2"><br>OtherDeductions:<br>
-				<br></td>
-				<td class="padding2"><input type="text" name="incomeTax"
-					value=<%=otherDeductions %>"></td>
-			</tr>
-
-			<tr>
-				<td><br>CityCompensatoryAll:<br>
-				<br></td>
-				<td><input type="text" name="cityCompensatoryAll"
-					value=<%=cityCompensatoryAll %>></td>
-			</tr>
-
-			<tr>
-				<td><br>SpecialAllowance:<br>
-				<br></td>
-				<td><input type="text" name="specialAllowance"
-					value=<%=specialAllowance %>></td>
-			</tr>
-
-			<tr>
-				<td><br>Medical:<br>
-				<br></td>
-				<td><input type="text" name="medical" value="<%=medical%>"></td>
-			</tr>
-		</table>
-	</div>
-
-	<div class="backgrouondColor3">
-		<table>
-			<tr>
-
-				<td class="padding5">Total Deduction:</td>
-				<td class="padding5"><input type="text"
-					value=<%=totalDeductions %>></td>
-			</tr>
-			<tr>
-				<td>GrossSalary:</td>
-				<td><input type="text" value=<%=grossSalary %>></td>
-			</tr>
-			<tr>
-				<td class="padding5">Net Pay:</td>
-				<td class="padding5"><input type="text" name="netpay"
-					value=<%=netPay%>></td>
-			</tr>
-
-		</table>
-	</div>
-
-	<div>
-		<p class="parapadding">
-			@as applicable based on savings declaration by employee.<br>
-
-			*MedicalReimbursement, CityCompensatory& Income Tax have not been
-			deducted as per the request of the employee.
-		</p>
-
-		<p class="parapadding">
-			If any questions, mail to accounts@dhatriinfo.com <br> Note:
-			This is system generated mail.Signature not required.
-		</p>
-	</div>
-</form>
 	<footer>
-	<p class="aligncenter">DHATRI INFO SOLUTIONS PVT.LTD.</p>
-	<p styple="padding-left :2cm;">_______________________________________________________________________________________________________________________________________________________________________________________</p>
-	<p class="aligncenter">
-		Manjeera Trinity Corporate, Suite #406, KPHB Phase 3, Kukatpally,
-		Hyderabad: 500 072, Telangana, India<br> Phone: +91 40 6591 3555,
-		6555 7888 website: <a href="www.dhatriinfo.com">
-			www.dhatriinfo.com</a>.
-	</p>
-	</footer>
+		<div>
+			<p class="parapadding">
+				@as applicable based on savings declaration by employee.<br>
+	
+				*MedicalReimbursement, CityCompensatory& Income Tax have not been
+				deducted as per the request of the employee.
+			</p>
+	
+			<p class="parapadding">
+				If any questions, mail to accounts@dhatriinfo.com <br> Note:
+				This is system generated mail.Signature not required.
+			</p>
+		</div>
+	</footer>	
+</form>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
-
 </html>
