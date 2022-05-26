@@ -13,6 +13,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
  <style>
+ .background__image{
+width:100%;
+height:750px;
+}
  
      .carousel-item {
   height: 100vh;
@@ -170,7 +174,7 @@
 </nav>
     
 <header>
-<img src="https://mdbootstrap.com/img/new/slides/031.jpg" class="img-fluid" width="1600" height="765"/>
+<img class="background__image" src="https://www.elmhurst.edu/wp-content/uploads/2022/02/masters-information-technology-thumb-792x528.jpg" width="800" heiht="760"/>
   <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -228,7 +232,7 @@
 							<i class="fa fa-lock"></i>
 							 <input type="password"class="form-control" onkeypress="clearForm()" id="Password"
 								name="mobileNumber" placeholder="Enter password"
-								required="required">
+							required="required">
 						</div>
 						<div class="form-group">
 							<p>Type</p>
@@ -239,7 +243,7 @@
 								<option value="employeer"> Employeer</option>
 								<option value="admin">ADMIN</option>
 								<option value="manager">Manager</option>
-								<option value="hr">HR</option>
+						<%-- 	<option value="hr">HR</option> --%>
 							</select>
 						</div>
 						<div class="form-group">
